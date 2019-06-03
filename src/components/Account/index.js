@@ -19,4 +19,3 @@ const AccountPage = () => (
 const condition = authUser => !!authUser;
 
 export default withAuthorization(condition)(AccountPage);
-

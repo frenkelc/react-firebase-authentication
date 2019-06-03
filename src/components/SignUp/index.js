@@ -6,6 +6,7 @@ import { compose } from 'recompose';
 
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import * as ROLES from '../../constants/roles';
 
 const SignUpPage = () => (
     <div>
@@ -19,6 +20,7 @@ const INITIALL_STATE = {
     email: '',
     passwordOne: '',
     passwordtwo: '',
+    isAdmin: false,
     error: null,
 };
 
@@ -30,8 +32,12 @@ class SignUpFormBase  extends Component {
     }
 
     onSubmit = event => {
-        const {username, email, passwordOne } = this.state;
+        const {username, email, passwordOne, isAdmin } = this.state;
+        const roles = {};
 
+        if( isAdmin ) {
+            roles[ROLES.ADMIN] = ROLES.ADMIN;
+        }
         this.props.firebase
            .doCreateUserWithEmailAndPassword(email, passwordOne)
            .then(authUser => {
@@ -41,6 +47,7 @@ class SignUpFormBase  extends Component {
                 .set({
                     username,
                     email,
+                    roles,
                 });
            })
            .then(authUser => {
@@ -58,12 +65,17 @@ class SignUpFormBase  extends Component {
         this.setState({ [event.target.name]: event.target.value});
     }
 
+    onChangeCheckbox = event => {
+        this.setState({[event.target.name]: event.target.value});
+    };
+
     render(){
        const {
            username,
            email,
            passwordOne,
            passwordTwo,
+           isAdmin,
            error,
        } = this.state;
 
@@ -103,6 +115,15 @@ class SignUpFormBase  extends Component {
                type="password"
                placeholder="Confirm Password"
              />
+             <label>
+                 Admin:
+                 <input
+                   name="isAdmin"
+                   type="checkbox"
+                   checked={isAdmin}
+                   onChange={this.onChangeCheckbox}
+                />
+             </label>
              <button disabled={isInvalid} type="submit">Sign Up</button>
 
              {error && <p>{error.message}</p>}
