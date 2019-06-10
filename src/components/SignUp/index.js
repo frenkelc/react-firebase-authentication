@@ -15,11 +15,11 @@ const SignUpPage = () => (
     </div>
 );
 
-const INITIALL_STATE = {
+const INITIAL_STATE = {
     username: '',
     email: '',
     passwordOne: '',
-    passwordtwo: '',
+    passwordTwo: '',
     isAdmin: false,
     error: null,
 };
@@ -38,12 +38,12 @@ class SignUpFormBase  extends Component {
     constructor(props){
         super(props);
 
-        this.state = {...INITIALL_STATE};
+        this.state = {...INITIAL_STATE};
     }
 
     onSubmit = event => {
         const {username, email, passwordOne, isAdmin } = this.state;
-        const roles = {};
+        const roles = [];
 
         if( isAdmin ) {
             roles[ROLES.ADMIN] = ROLES.ADMIN;
@@ -60,8 +60,11 @@ class SignUpFormBase  extends Component {
                     roles,
                 });
            })
+           .then(() => {
+               return this.props.firebase.doSendEmailVerification();
+           })
            .then(authUser => {
-               this.setState({...INITIALL_STATE});
+               this.setState({...INITIAL_STATE});
                this.props.history.push(ROUTES.HOME);
            })
            .catch(error => {
@@ -80,7 +83,7 @@ class SignUpFormBase  extends Component {
     }
 
     onChangeCheckbox = event => {
-        this.setState({[event.target.name]: event.target.value});
+        this.setState({[event.target.name]: event.target.checked});
     };
 
     render(){

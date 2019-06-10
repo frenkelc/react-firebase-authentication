@@ -11,7 +11,7 @@ const config = {
     messagingSenderId: "1074232551025",
   };
 
-  class Firebase{
+  class Firebase {
     constructor(){
           app.initializeApp(config);
 
@@ -47,7 +47,12 @@ const config = {
 
     doPasswordUpdate = password =>
         this.auth.updatePassword(password);      
-
+    
+    doSendEmailVerification = () =>
+        this.auth.currentUser.sendEmailVerification({
+          url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT,
+      });
+    
 
     // *** Merge Auth and DB User API *** //
 
@@ -68,6 +73,8 @@ const config = {
             authUser = {
               uid: authUser.uid,
               email: authUser.email,
+              emailVerified: authUser.emailVerified,
+              providerData: authUser.providerData,
               ...dbUser,
             };
 
