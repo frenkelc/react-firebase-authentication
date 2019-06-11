@@ -3,12 +3,12 @@ import 'firebase/auth';
 import 'firebase/database';
 
 const config = {
-    apiKey: "AIzaSyBFDcSHSS-LXwnyh9ki01ByWn5qxq8TAZU",
-    authDomain: "organize-56b4e.firebaseapp.com",
-    databaseURL: "https://organize-56b4e.firebaseio.com",
-    projectId: "organize-56b4e",
-    storageBucket: "organize-56b4e.appspot.com",
-    messagingSenderId: "1074232551025",
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DATABASE_URL,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
   };
 
   class Firebase {

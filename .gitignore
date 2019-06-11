@@ -21,10 +21,3 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-REACT_APP_API_KEY: AIzaSyBFDcSHSS-LXwnyh9ki01ByWn5qxq8TAZU
-  REACT_APP_AUTH_DOMAIN: organize-56b4e.firebaseapp.com
-  REACT_APP_DATABASE_URL: https://organize-56b4e.firebaseio.com
-  REACT_APP_PROJECT_ID: organize-56b4e
-  REACT_APP_STORAGE_BUCKET: organize-56b4e.appspot.com
-  REACT_APP_MESSAGING_SENDER_ID: 1074232551025
