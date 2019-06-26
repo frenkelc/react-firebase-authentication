@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
-import {
-  AuthUserContext,
-  withAuthorization,
-  withEmailVerification,
-} from '../Session';import { withFirebase } from '../Firebase';
+import { withAuthorization, withEmailVerification } from '../Session';
+import { withFirebase } from '../Firebase';
 import { PasswordForgetForm } from '../PasswordForget';
 import PasswordChangeForm from '../PasswordChange';
 
@@ -28,17 +26,13 @@ const SIGN_IN_METHODS = [
   },
 ];
 
-const AccountPage = () => (
-      <AuthUserContext.Consumer>
-         {authUser => (
-           <div>
-             <h1>Account: {authUser.email}</h1>
-             <PasswordForgetForm />
-             <PasswordChangeForm />
-             <LoginManagement authUser={authUser} />
-          </div>
-         )}
-      </AuthUserContext.Consumer>
+const AccountPage = ({ authUser }) => (
+    <div>
+      <h1>Account: {authUser.email}</h1>
+      <PasswordForgetForm />
+      <PasswordChangeForm />
+      <LoginManagement authUser={authUser} />
+  </div>
 );
 
 class LoginManagementBase extends Component {
@@ -70,15 +64,8 @@ class LoginManagementBase extends Component {
     .then(this.fetchSignInMethods)
     .catch(error => this.setState({ error }));
   };
-
-  onUnlink = providerId => {
-    this.props.firebase.auth.currentUser
-    .unlink(providerId)
-    .then(this.fetchSignInMethods)
-    .catch(error => this.setState({ error }));
-  };
-
-  onDefaultLoginLink = password => {
+  
+ onDefaultLoginLink = password => {
     const credential = this.props.firebase.emailAuthProvider.credential(
       this.props.authUser.email,
       password,
@@ -89,7 +76,15 @@ class LoginManagementBase extends Component {
       .then(this.fetchSignInMethods)
       .catch(error => this.setState({ error }));
   };
-  render() {
+
+  onUnlink = providerId => {
+    this.props.firebase.auth.currentUser
+    .unlink(providerId)
+    .then(this.fetchSignInMethods)
+    .catch(error => this.setState({ error }));
+  };
+
+ render() {
     const { activeSignInMethods, error } = this.state;
 
     return(
@@ -173,8 +168,7 @@ class DefaultLoginToggle extends Component {
     this.setState({[ event.target.name]: event.target.value });
   };
 
-  render()
-  {
+  render() {
     const {
       onlyOneLeft,
       isEnabled,
@@ -216,13 +210,20 @@ class DefaultLoginToggle extends Component {
               Link {signInMethod.id}
             </button>
           </form>
-      )
+      );
   }
-}
+}					  
+
 const LoginManagement = withFirebase(LoginManagementBase);
+
+const mapStateToProps = state => ({
+  authUser: state.sessionState.authUser,
+});
+
 const condition = authUser => !!authUser;
 
 export default compose(
+  connect(mapStateToProps),
   withEmailVerification,
   withAuthorization(condition),
 )(AccountPage);

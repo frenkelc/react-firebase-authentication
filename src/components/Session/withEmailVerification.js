@@ -1,6 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
 
-import AuthUserContext from './context';
 import { withFirebase } from '../Firebase';
 
 const needsEmailVerification = authUser =>
@@ -12,10 +13,10 @@ const needsEmailVerification = authUser =>
 
 const withEmailVerification = Component => {
   class WithEmailVerification extends React.Component {
-constructor(props){
-  super(props);
+     constructor(props){
+     super(props);
 
-  this.state = { isSent : false};
+     this.state = { isSent : false};
 }
 
     onSendEmailVerification = () => {
@@ -25,22 +26,19 @@ constructor(props){
     };
 
     render() {
-      return(
-        <AuthUserContext.Consumer>
-          {authUser => 
-            needsEmailVerification(authUser) ? (
+      return needsEmailVerification(this.props.authUser) ? (
               <div>
                 {this.state.isSent ? (
                   <p>
-                    E-Mail confirmation sent: Check you E-Mails (Spam
-                    folder included) for a confirmation E-Mail.
-                    Refresh this page once you confirmed your E-Mail.
+                  E-Mail confirmation sent: Check you E-Mails (Spam folder
+                  included) for a confirmation E-Mail. Refresh this page
+                  once you confirmed your E-Mail.
                   </p>
                 ) : (
                   <p>
-                    Verify your E-Mail: Check you E-Mails (Spam folder
-                    included) for a confirmation E-Mail or send
-                    another confirmation E-Mail.
+                  Verify your E-Mail: Check you E-Mails (Spam folder
+                  included) for a confirmation E-Mail or send another
+                  confirmation E-Mail.
                   </p>
                 )}
 
@@ -54,14 +52,18 @@ constructor(props){
               </div>
             ) : (
               <Component {...this.props} /> 
-            )
-          }
-        </AuthUserContext.Consumer>
-      );
+            );
+      }
     }
-  }
 
-  return withFirebase(WithEmailVerification);
+    const mapStateToProps = state => ({
+      authUser: state.sessionState.authUser,
+    });
+
+    return compose(
+      withFirebase,
+      connect(mapStateToProps),
+    )(WithEmailVerification);
 };
 
 export default withEmailVerification;

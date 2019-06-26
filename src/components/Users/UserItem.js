@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
 import { withFirebase } from '../Firebase';
@@ -7,28 +8,26 @@ class UserItem  extends Component {
     constructor(props){
         super(props);
 
-        this.state ={ 
+        this.state = { 
             loading : false,
-            user: null,
-            ...props.location.state,
         };
     }
 
     componentDidMount() {
-        if (this.state.user) {
-            return;
-        }
+        if (!this.props.user) {
+          this.setState({ loading: true });
 
-        this.setState({ loading: true });
+          this.props.firebase
+            .user(this.props.match.params.id)
+            .on('value', snapshot => {
+              this.props.onSetUser(
+                snapshot.val(),
+                this.props.match.params.id,
+              );
 
-        this.props.firebase
-        .user(this.props.match.params.id)
-        .on('value', snapshot => {
-            this.setState({
-                user: snapshot.val(),
-                loading: false,
+              this.setState({ loading: false });
             });
-        });
+        }
     }
 
     componentWillUnmount() {
@@ -36,11 +35,12 @@ class UserItem  extends Component {
     }
 
     onSendPasswordResetEmail  = () =>  {
-        this.props.firebase.soPasswordReset(this.state.user.email);
+        this.props.firebase.doPasswordReset(this.props.user.email);
     };
 
     render() {
-        const { user, loading } = this.state;
+      const { user } = this.props;
+      const { loading } = this.state;
 
     return (
       <div>
@@ -72,5 +72,19 @@ class UserItem  extends Component {
     );
   }
 }
-					 
-export default compose(withFirebase)(UserItem);
+           
+const mapStateToProps = (state, props) => ({
+  user: (state.userState.users || {})[props.match.params.id],
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSetUser: (user, uid) => dispatch({ type: 'USER_SET', user, uid}),
+});
+
+export default compose(
+  withFirebase,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  ),
+)(UserItem);

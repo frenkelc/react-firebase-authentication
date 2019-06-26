@@ -7,8 +7,7 @@ import { PasswordForgetLink } from '../PasswordForget';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 
-
-  const SignInPage = () => (
+const SignInPage = () => (
       <div>
           <h1>SignIn</h1>
           <SignInForm />
@@ -46,14 +45,17 @@ const ERROR_MSG_ACCOUNT_EXISTS = `
       onSubmit = event => {
           const { email, password } = this.state;
 
-          this.onSubmit.props.firebase
+          this.props.firebase
             .doSignInWithEmailAndPassword(email, password)
             .then(() => {
                 this.setState({ ...INITIAL_STATE });
                 this.props.history.push(ROUTES.HOME);
             })
+			.catch(error => {
+             this.setState({ error });
+            });	  
 
-          event.preventDefault();  
+        event.preventDefault();  
       };
 
       onChange = event => {
@@ -91,11 +93,10 @@ const ERROR_MSG_ACCOUNT_EXISTS = `
       }
       
   }
-
-    
-  class SignInGoogleBase extends Component {
+class SignInGoogleBase extends Component {
     constructor(props){
         super(props);
+
         this.state = { error:null };
     }
 
@@ -104,15 +105,13 @@ const ERROR_MSG_ACCOUNT_EXISTS = `
         .doSignInWithGoogle()
         .then(socialAuthUser => {
          // Create a user in your Firebase Realtime Database too
-          return this.props.firebase
-          .user(socialAuthUser.user.uid)
-          .set({
+          return this.props.firebase.user(socialAuthUser.user.uid).set({
               username: socialAuthUser.user.displayName,
               email: socialAuthUser.user.email,
-              roles: {},
+              roles: [],
           });
         })
-        .than(() =>{
+        .then(() =>{
             this.setState({ error: null});
             this.props.history.push(ROUTES.HOME);
         })
@@ -122,7 +121,8 @@ const ERROR_MSG_ACCOUNT_EXISTS = `
             }
 
             this.setState({ error });
-        });
+        });				 
+
         event.preventDefault();
     }  ;
 
@@ -131,7 +131,8 @@ const ERROR_MSG_ACCOUNT_EXISTS = `
 
         return(
             <form onSubmit={this.onSubmit}>
-                <button type="submit">Sign In With Google</button>
+                <button type="submit">Sign In with Google</button>
+
                 {error && <p>{error.message}</p>}
             </form>
         );
@@ -150,15 +151,13 @@ class SignInFacebookBase extends Component {
         .doSignInWithFacebook()
         .then(socialAuthUser => {
             // Create a user in your Firebase Realtime Database too
-            return this.props.firebase
-              .user(socialAuthUser.user.uid)
-              .set({
+            return this.props.firebase.user(socialAuthUser.user.uid).set({
                 username: socialAuthUser.additionalUserInfo.profile.name,
                 email: socialAuthUser.additionalUserInfo.profile.email,
-                roles: {},
+                roles: [],
               });
           })
-        .then(socialAuthUser => {
+        .then(() => {
           this.setState({ error: null });
           this.props.history.push(ROUTES.HOME);
         })
@@ -198,15 +197,13 @@ class SignInFacebookBase extends Component {
         .doSignInWithTwitter()
         .then(socialAuthUser => {
             // Create a user in your Firebase Realtime Database too
-            return this.props.firebase
-              .user(socialAuthUser.user.uid)
-              .set({
+            return this.props.firebase.user(socialAuthUser.user.uid).set({
                 username: socialAuthUser.additionalUserInfo.profile.name,
                 email: socialAuthUser.additionalUserInfo.profile.email,
-                roles: {},
+                roles: [],
               });
           })
-        .then(socialAuthUser => {
+        .then(() => {
           this.setState({ error: null });
           this.props.history.push(ROUTES.HOME);
         })

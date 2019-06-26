@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-
 import { Link, withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
-
 
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
@@ -45,16 +42,15 @@ class SignUpFormBase  extends Component {
         const {username, email, passwordOne, isAdmin } = this.state;
         const roles = [];
 
-        if( isAdmin ) {
-            roles[ROLES.ADMIN] = ROLES.ADMIN;
-        }
+        if (isAdmin ) {
+            roles.push(ROLES.ADMIN);
+        }				
+
         this.props.firebase
            .doCreateUserWithEmailAndPassword(email, passwordOne)
            .then(authUser => {
             // Create a user in your Firebase realtime database
-              return this.props.firebase
-                .user(authUser.user.uid)
-                .set({
+              return this.props.firebase.user(authUser.user.uid).set({
                     username,
                     email,
                     roles,
@@ -63,7 +59,7 @@ class SignUpFormBase  extends Component {
            .then(() => {
                return this.props.firebase.doSendEmailVerification();
            })
-           .then(authUser => {
+           .then(() => {
                this.setState({...INITIAL_STATE});
                this.props.history.push(ROUTES.HOME);
            })
@@ -76,11 +72,11 @@ class SignUpFormBase  extends Component {
            });
 
        event.preventDefault();    
-    }
+    };
 
     onChange = event => {
         this.setState({ [event.target.name]: event.target.value});
-    }
+    };
 
     onChangeCheckbox = event => {
         this.setState({[event.target.name]: event.target.checked});
@@ -141,7 +137,9 @@ class SignUpFormBase  extends Component {
                    onChange={this.onChangeCheckbox}
                 />
              </label>
-             <button disabled={isInvalid} type="submit">Sign Up</button>
+             <button disabled={isInvalid} type="submit">
+               Sign Up
+             </button>
 
              {error && <p>{error.message}</p>}
           </form>
@@ -154,11 +152,6 @@ const SignUpLink = () => (
        Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link> 
     </p>
 );
-
-const SignUpForm = compose(
-    withRouter,
-    withFirebase,
-  )(SignUpFormBase);
-
+const SignUpForm = withRouter(withFirebase(SignUpFormBase));
 export default SignUpPage;
 export { SignUpForm, SignUpLink };
