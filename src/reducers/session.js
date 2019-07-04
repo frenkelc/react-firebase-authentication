@@ -4,7 +4,7 @@ const INITIAL_STATE = {
 
 const applySetAuthUser = (state, action) => ({
     ...state,
-    authUesr: action.authUesr,
+    authUser: action.authUser,
 });
 
 function sessionReducer(state = INITIAL_STATE, action) {
