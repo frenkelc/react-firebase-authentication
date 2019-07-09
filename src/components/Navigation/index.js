@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 import { connect } from 'react-redux';
 
 import SignOutButton from '../SignOut';
@@ -16,32 +16,30 @@ const Navigation = ({ authUser }) =>
 const NavigationAuth = ({ authUser }) => (
        <ul>
           <li>
-               <Link to={ROUTES.LANDING}>Landing</Link>
+               <Link href={ROUTES.LANDING} variant="body2">Landing</Link>
           </li>
           <li>
-               <Link to={ROUTES.HOME}>Home</Link>
+               <Link href={ROUTES.HOME} variant="body2">Home</Link>
           </li>
           <li>
-               <Link to={ROUTES.ACCOUNT}>Account</Link>
+               <Link href={ROUTES.ACCOUNT} variant="body2">Account</Link>
           </li>
           {authUser.roles.includes(ROLES.ADMIN) && ( 
            <li>
-               <Link to={ROUTES.ADMIN}>Admin</Link>
+               <Link href={ROUTES.ADMIN} variant="body2">Admin</Link>
            </li>
           )}
-          <li>
-              <SignOutButton />
-          </li>
+           <SignOutButton />
        </ul>
 );
 
 const NavigationNonAuth = () => (
     <ul>
        <li>
-           <Link to={ROUTES.LANDING}>Landing</Link>
+           <Link href={ROUTES.LANDING} variant="body2">Landing</Link>
        </li>
       <li>
-           <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+           <Link href={ROUTES.SIGN_IN} variant="body2">Sign In</Link>
       </li>
     </ul>
 );

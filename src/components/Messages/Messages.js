@@ -1,6 +1,19 @@
 import React, { Component } from 'react';				
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Link from '@material-ui/core/Link';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 
 import { withFirebase } from '../Firebase';	   
 import MessageList from './MessageList';
@@ -84,9 +97,9 @@ class Messages extends Component {
         return (
              <div>
                 {!loading && messages &&  (
-                    <button type="button" onClick={this.onNextPage}>
+                    <Button variant="contained" color="primary" type="button" onClick={this.onNextPage}>
                         More
-                    </button>
+                    </Button>
                 )}
 
                 {loading && <div>Loading ...</div>}
@@ -111,12 +124,15 @@ class Messages extends Component {
                    this.onCreateMessage(event, this.props.authUser)
                   }
                 >
-                    <input
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      fullWidth
                       type="text"
                       value={text}
                       onChange={this.onChangeText}
                     />
-                    <button type="submit">Send</button>
+                    <Button variant="contained" color="primary" type="submit">Send</Button>
                 </form>
              </div>
         );

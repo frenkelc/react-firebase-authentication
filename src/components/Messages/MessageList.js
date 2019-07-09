@@ -1,4 +1,6 @@
 import React from 'react';
+import List from '@material-ui/core/List';
+import Grid from '@material-ui/core/Grid';
 
 import MessageItem from './MessageItem';		  
 
@@ -7,7 +9,7 @@ const MessageList = ({
     onEditMessage,
     onRemoveMessage,
    }) => (
-    <ul>
+    <List>
         {messages.map(message => (
             <MessageItem
              key={message.uid}
@@ -16,7 +18,7 @@ const MessageList = ({
              onRemoveMessage={onRemoveMessage}
             />
         ))}
-    </ul>
+    </List>
 );
 
 

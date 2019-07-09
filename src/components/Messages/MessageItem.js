@@ -1,5 +1,51 @@
 import React, { Component } from 'react';
 
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import ListItemText from '@material-ui/core/ListItemText';
+import Link from '@material-ui/core/Link';
+import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
+
+const classes = makeStyles(theme => ({
+  '@global': {
+    body: {
+      backgroundColor: theme.palette.common.white,
+    },
+  },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(3),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  error: {
+    color: 'red',
+  },
+  center: {
+    textAlign: 'center',
+  },
+}));
+
 class MessageItem extends Component {
     constructor(props){
         super(props);
@@ -32,9 +78,12 @@ class MessageItem extends Component {
         const { editMode, editText } = this.state;
 
         return (
-           <li>
+           <ListItemText>
             {editMode ? (
-              <input
+              <TextField
+                 variant="outlined"
+                 margin="normal"
+                 fullWidth
                  type="text"
                  value={editText}
                  onChange={this.onChangeEditText}
@@ -43,29 +92,30 @@ class MessageItem extends Component {
                <span>
                <strong>
                 {message.user.username || message.user.userId}
-               </strong>{' '}
-               {message.text} {message.editedAt && <span>(Edited)</span>}
+               </strong><br/>
+               {message.text} {message.editedAt && <span>(Edited)</span>}<br/>
               </span> 
             )}
                 
            {editMode ? (
               <span>
-                <button onClick={this.onSaveEditText}>Save</button>
-                <button onClick={this.onToggleEditMode}>Reset</button>
+                  <Button variant="contained" onClick={this.onSaveEditText}>Save</Button>
+                  <Button variant="contained" onClick={this.onToggleEditMode}>Reset</Button>
               </span>
             ) : (
-              <button onClick={this.onToggleEditMode}>Edit</button>
+                <Button variant="contained" onClick={this.onToggleEditMode}>Edit</Button>
             )}
 
             {!editMode && (
-              <button
-                type="button"
-                onClick={() => onRemoveMessage(message.uid)}
-              >
-                Delete
-              </button>
+                <Button
+                  type="button"
+                  variant="contained"
+                  onClick={() => onRemoveMessage(message.uid)}
+                >
+                  Delete
+                </Button>
             )}
-          </li>
+          </ListItemText>
         );
     }
 }
